@@ -137,3 +137,17 @@ def bills(request: Request):
         request=request,
         name="bill.html"
     )
+# -----------------------------------------
+# Root Page
+# -----------------------------------------
+@app.get("/")
+def root():
+    return RedirectResponse(url="/home", status_code=302)
+
+
+# -----------------------------------------
+# Test Page
+# -----------------------------------------
+@app.get("/test")
+def test():
+    return {"message": "Smart Canteen Ordering System is Running Successfully!"}
