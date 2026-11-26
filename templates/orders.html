@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Canteen - Orders</title>
+<style>
+*{
+    box-sizing:border-box;
+}
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background-color:#f4f7fb;
+    color:#333;
+}
+/* ================= NAVBAR ================= */
+.navbar{
+    background:linear-gradient(135deg,#0066ff,#00a8ff);
+    padding:18px 50px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 3px 12px rgba(0,0,0,.12);
+}
+.navbar h2{
+    color:white;
+    margin:0;
+}
+.nav-links{
+    display:flex;
+    gap:25px;
+}
+.nav-links a{
+    color:white;
+    text-decoration:none;
+    font-size:17px;
+    font-weight:bold;
+}
+.nav-links a:hover{
+    text-decoration:underline;
+}
+/* ================= MAIN ================= */
+.container{
+    width:90%;
+    max-width:1000px;
+    margin:40px auto 60px;
+}
+.container h1{
+    text-align:center;
+    color:#333;
+    margin-bottom:30px;
+}
+/* ================= ORDER TITLE ================= */
+.order-type-title{
+    color:#075ee8;
+    margin-top:35px;
+    margin-bottom:15px;
+}
+/* ================= ORDER CARD ================= */
+.order-card{
+    background:white;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 3px 10px rgba(0,0,0,.1);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+.food-info{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+.food-icon{
+    font-size:45px;
+}
+.food-details h3{
+    margin:0 0 8px 0;
+    color:#333;
+}
+.food-details p{
+    margin:4px 0;
+    color:#555;
+}
+/* ================= QUANTITY ================= */
+.quantity-section{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+.quantity-btn{
+    width:35px;
+    height:35px;
+    border:none;
+    border-radius:6px;
+    background:#007bff;
+    color:white;
+    font-size:20px;
+    cursor:pointer;
+}
+.quantity-btn:hover{
+    background:#0056b3;
+}
+.quantity{
+    font-size:18px;
+    font-weight:bold;
+    min-width:25px;
+    text-align:center;
+}
+/* ================= REMOVE ================= */
+.remove-btn{
+    background:#dc3545;
+    color:white;
+    border:none;
+    padding:10px 15px;
+    border-radius:6px;
+    cursor:pointer;
+    margin-left:20px;
+}
+.remove-btn:hover{
+    background:#b02a37;
+}
+/* ================= COMMON BOX ================= */
+.delivery-box{
+    background:white;
+    padding:30px;
+    margin-top:30px;
+    border-radius:15px;
+    box-shadow:0 4px 15px rgba(0,0,0,.10);
+    border:1px solid #e5efff;
+}
+.delivery-box h2{
+    margin-top:0;
+    color:#075ee8;
+    text-align:center;
+    margin-bottom:10px;
+}
+.subtitle{
+    text-align:center;
+    color:#666;
+    margin-bottom:25px;
+}
+/* ================= FORM ================= */
+.form-group{
+    margin-bottom:18px;
+}
+.form-group label{
+    display:block;
+    font-weight:bold;
+    margin-bottom:7px;
+    color:#333;
+}
+.form-group input,
+.form-group textarea{
+    width:100%;
+    padding:13px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:15px;
+    outline:none;
+}
+.form-group input:focus,
+.form-group textarea:focus{
+    border-color:#007bff;
+    box-shadow:0 0 5px rgba(0,123,255,.20);
+}
+.form-group textarea{
+    height:90px;
+    resize:vertical;
+}
+/* ================= LOCATION ================= */
+.location-btn{
+    width:100%;
+    padding:12px;
+    margin-top:8px;
+    border:none;
+    border-radius:8px;
+    background:#eef6ff;
+    color:#075ee8;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+}
+.location-btn:hover{
+    background:#dcecff;
+}
+.location-status{
+    margin-top:8px;
+    font-size:14px;
+    color:#20a348;
+    font-weight:bold;
+}
+/* ================= DELIVERY TYPE ================= */
+.delivery-type{
+    display:flex;
+    gap:15px;
+    margin-top:10px;
+}
+.delivery-option{
+    flex:1;
+    padding:15px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    text-align:center;
+    cursor:pointer;
+    font-weight:bold;
+}
+.delivery-option:hover{
+    border-color:#007bff;
+    background:#f4f8ff;
+}
+.delivery-option input{
+    width:auto;
+    margin-right:8px;
+}
+/* ================= PAYMENT ================= */
+.payment-option{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:15px;
+    margin-bottom:12px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:bold;
+}
+.payment-option:hover{
+    background:#f4f8ff;
+    border-color:#007bff;
+}
+.payment-option input{
+    width:18px;
+    height:18px;
+}
+/* ================= ORDER STATUS ================= */
+.order-status{
+    display:flex;
+    justify-content:space-between;
+    text-align:center;
+    margin-top:25px;
+}
+.status-step{
+    flex:1;
+}
+.status-circle{
+    width:42px;
+    height:42px;
+    margin:auto;
+    border-radius:50%;
+    background:#ddd;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+}
+.status-step.active .status-circle{
+    background:#007bff;
+    color:white;
+}
+.status-step p{
+    font-size:14px;
+    margin-top:10px;
+}
+/* ================= TOTAL ================= */
+.total-box{
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 3px 10px rgba(0,0,0,.1);
+    margin-top:30px;
+    text-align:right;
+}
+.total-box h2{
+    color:#333;
+    margin-bottom:20px;
+}
+.place-order-btn{
+    background:linear-gradient(135deg,#28a745,#20c997);
+    color:white;
+    border:none;
+    padding:14px 30px;
+    font-size:17px;
+    font-weight:bold;
+    border-radius:8px;
+    cursor:pointer;
+    margin-left:10px;
+}
+.place-order-btn:hover{
+    transform:translateY(-2px);
+}
+/* ================= SUCCESS ================= */
+.success-message{
+    display:none;
+    background:#d4edda;
+    color:#155724;
+    padding:18px;
+    margin-bottom:20px;
+    border-radius:10px;
+    text-align:center;
+    font-weight:bold;
+}
+/* ================= EMPTY ================= */
+.empty-message{
+    text-align:center;
+    background:white;
+    padding:30px;
+    margin-bottom:25px;
+    border-radius:12px;
+    box-shadow:0 3px 10px rgba(0,0,0,.1);
+}
+.empty-message h2{
+    color:#555;
+}
+.menu-btn{
+    display:inline-block;
+    background:#007bff;
+    color:white;
+    text-decoration:none;
+    padding:12px 25px;
+    border-radius:7px;
+    margin-top:15px;
+}
+.menu-btn:hover{
+    background:#0056b3;
+}
+/* ================= RESPONSIVE ================= */
+@media(max-width:700px){
+    .navbar{
+        padding:15px 20px;
+        flex-direction:column;
+        gap:15px;
+    }
+    .nav-links{
+        gap:15px;
+        flex-wrap:wrap;
+        justify-content:center;
+    }
+    .order-card{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:20px;
+    }
+    .quantity-section{
+        width:100%;
+        flex-wrap:wrap;
+    }
+    .remove-btn{
+        margin-left:0;
+    }
+    .total-box{
+        text-align:center;
+    }
+    .delivery-box{
+        padding:20px;
+    }
+    .delivery-type{
+        flex-direction:column;
+    }
+    .order-status{
+        flex-direction:column;
+        gap:20px;
+    }
+}
+</style>
+</head>
+<body>
+<!-- ================= NAVBAR ================= -->
+<div class="navbar">
+    <h2>🍴 Smart Canteen</h2>
+    <div class="nav-links">
+        <a href="/home">🏠 Home</a>
+        <a href="/menu">🍴 Menu</a>
+        <a href="/orders">🛒 Orders</a>
+        <a href="/bill">🧾 Bill</a>
+        <a href="/owner">👤 Owner</a>
+    </div>
+</div>
+<!-- ================= MAIN ================= -->
+<div class="container">
+    <h1>🛒 My Orders</h1>
+    <div id="successMessage" class="success-message">
+        ✅ Your order has been placed successfully!
+    </div>
+    <!-- ================= ORDERS ================= -->
+    <div id="ordersContainer"></div>
+    <!-- ================= CUSTOMER DETAILS ================= -->
+    <div id="customerSection"
+         class="delivery-box"
+         style="display:none;">
+        <h2>👤 Customer Details</h2>
+        <p class="subtitle">
+            Enter your personal details
+        </p>
+        <div class="form-group">
+            <label>👤 Customer Name</label>
+            <input
+                type="text"
+                id="customerName"
+                placeholder="Enter your name">
+        </div>
+    </div>
+    <!-- ================= CONTACT ================= -->
+    <div id="contactSection"
+         class="delivery-box"
+         style="display:none;">
+        <h2>📱 Contact Information</h2>
+        <p class="subtitle">
+            Enter your contact information
+        </p>
+        <div class="form-group">
+            <label>📞 Mobile Number</label>
+            <input
+                type="tel"
+                id="mobileNumber"
+                maxlength="10"
+                placeholder="Enter 10 digit mobile number">
+        </div>
+    </div>
+    <!-- ================= DELIVERY ================= -->
+    <div id="deliverySection"
+         class="delivery-box"
+         style="display:none;">
+        <h2>📍 Delivery Address</h2>
+        <p class="subtitle">
+            Enter your details for online food delivery
+        </p>
+        <div class="form-group">
+            <label>📍 Delivery Location</label>
+            <input
+                type="text"
+                id="deliveryLocation"
+                placeholder="Enter your location">
+            <button
+                class="location-btn"
+                onclick="useCurrentLocation()">
+                📍 Use My Current Location
+            </button>
+            <div
+                id="locationStatus"
+                class="location-status">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>🏠 Full Delivery Address</label>
+            <textarea
+                id="fullAddress"
+                placeholder="Enter house/room number, street, area, landmark..."></textarea>
+        </div>
+        <label>
+            <strong>🚴 Delivery Type</strong>
+        </label>
+        <div class="delivery-type">
+            <label class="delivery-option">
+                <input
+                    type="radio"
+                    name="deliveryType"
+                    value="Home Delivery"
+                    checked>
+                🚴 Home Delivery
+            </label>
+            <label class="delivery-option">
+                <input
+                    type="radio"
+                    name="deliveryType"
+                    value="Pickup">
+                🏪 Pickup
+            </label>
+        </div>
+    </div>
+    <!-- ================= PAYMENT ================= -->
+    <div id="paymentSection"
+         class="delivery-box"
+         style="display:none;">
+        <h2>💳 Payment Method</h2>
+        <p class="subtitle">
+            Select your preferred payment method
+        </p>
+        <label class="payment-option">
+            <input
+                type="radio"
+                name="paymentMethod"
+                value="Online Payment"
+                checked>
+            💳 Online Payment
+        </label>
+        <label class="payment-option">
+            <input
+                type="radio"
+                name="paymentMethod"
+                value="UPI Payment">
+            📱 UPI Payment
+        </label>
+        <label class="payment-option">
+            <input
+                type="radio"
+                name="paymentMethod"
+                value="Cash on Delivery">
+            💵 Cash on Delivery
+        </label>
+        <label class="payment-option">
+            <input
+                type="radio"
+                name="paymentMethod"
+                value="Cash at Canteen">
+            🏫 Cash at Canteen
+        </label>
+    </div>
+    <!-- ================= ORDER STATUS ================= -->
+    <div id="statusSection"
+         class="delivery-box"
+         style="display:none;">
+        <h2>📦 Order Status</h2>
+
+        <p class="subtitle">
+            Track your food order
+        </p>
+        <div class="order-status">
+            <div class="status-step active">
+                <div class="status-circle">
+                    ✓
+                </div>
+                <p>Order Placed</p>
+            </div>
+            <div class="status-step">
+                <div class="status-circle">
+                    2
+                </div>
+                <p>Preparing</p>
+            </div>
+            <div class="status-step">
+
+                <div class="status-circle">
+                    3
+                </div>
+                <p>Ready</p>
+            </div>
+            <div class="status-step">
+                <div class="status-circle">
+                    4
+                </div>
+                <p>Delivered</p>
+            </div>
+        </div>
+    </div>
+    <!-- ================= TOTAL ================= -->
+    <div id="totalSection"
+         class="total-box"
+         style="display:none;">
+        <h2>
+            Grand Total:
+            ₹<span id="grandTotal">0</span>
+        </h2>
+        <button
+            id="canteenOrderButton"
+            class="place-order-btn"
+            onclick="placeCanteenOrder()"
+            style="display:none;">
+            🏫 Place Canteen Order
+        </button>
+        <button
+            id="onlineOrderButton"
+            class="place-order-btn"
+            onclick="placeOnlineOrder()"
+            style="display:none;">
+            🛵 Place Online Order
+        </button>
+    </div>
+</div>
+<script>
+/* ================= GET CANTEEN ORDERS ================= */
+function getCanteenOrders(){
+    let orders =
+        localStorage.getItem("canteenOrders");
+    if(!orders){
+        return [];
+    }
+    try{
+
+        let parsedOrders =
+            JSON.parse(orders);
+        if(Array.isArray(parsedOrders)){
+            return parsedOrders;
+        }
+    }
+    catch(error){
+
+        console.log(
+            "Canteen Orders Error:",
+            error
+        );
+
+    }
+    return [];
+}
+/* ================= GET ONLINE ORDERS ================= */
+function getOnlineOrders(){
+    let orders =
+        localStorage.getItem("onlineOrders");
+    if(!orders){
+        return [];
+    }
+    try{
+        let parsedOrders =
+            JSON.parse(orders);
+        if(Array.isArray(parsedOrders)){
+            return parsedOrders;
+        }
+    }
+    catch(error){
+        console.log(
+            "Online Orders Error:",
+            error
+        );
+
+    }
+    return [];
+}
+/* ================= SAVE CANTEEN ================= */
+function saveCanteenOrders(orders){
+    localStorage.setItem(
+        "canteenOrders",
+        JSON.stringify(orders)
+    );
+}
+/* ================= SAVE ONLINE ================= */
+function saveOnlineOrders(orders){
+    localStorage.setItem(
+        "onlineOrders",
+        JSON.stringify(orders)
+    );
+}
+/* ================= DISPLAY ORDERS ================= */
+function displayOrders(){
+    let canteenOrders =
+        getCanteenOrders();
+    let onlineOrders =
+        getOnlineOrders();
+    let container =
+        document.getElementById(
+            "ordersContainer"
+        );
+    container.innerHTML = "";
+    /* ================= CANTEEN TITLE ================= */
+    let canteenTitle =
+        document.createElement("h2");
+    canteenTitle.className =
+        "order-type-title";
+    canteenTitle.innerHTML =
+        "🏫 Canteen Orders";
+    container.appendChild(
+        canteenTitle
+    );
+    /* ================= CANTEEN ORDERS ================= */
+    if(canteenOrders.length === 0){
+        let empty =
+            document.createElement("div");
+        empty.className =
+            "empty-message";
+        empty.innerHTML = `
+            <h2>
+                No Canteen Orders
+            </h2>
+            <p>
+                Go to Menu and add food to Canteen Order.
+            </p>
+            <a
+                href="/menu"
+                class="menu-btn">
+                🍔 Go to Menu
+            </a>
+        `;
+        container.appendChild(
+            empty
+        );
+    }
+    else{
+        displayOrderCards(
+            canteenOrders,
+            "canteen"
+        );
+
+    }
+    /* ================= ONLINE TITLE ================= */
+    let onlineTitle =
+        document.createElement("h2");
+    onlineTitle.className =
+        "order-type-title";
+    onlineTitle.innerHTML =
+        "🛵 Online Food Orders";
+    container.appendChild(
+        onlineTitle
+    );
+    /* ================= ONLINE ORDERS ================= */
+    if(onlineOrders.length === 0){
+        let empty =
+            document.createElement("div");
+        empty.className =
+            "empty-message";
+        empty.innerHTML = `
+            <h2>
+                No Online Orders
+            </h2>
+            <p>
+                Go to Menu and add food to Online Order.
+            </p>
+            <a
+                href="/menu"
+                class="menu-btn">
+
+                🍔 Go to Menu
+            </a>
+
+        `;
+        container.appendChild(
+            empty
+        );
+    }
+    else{
+        displayOrderCards(
+            onlineOrders,
+            "online"
+        );
+    }
+    /* ================= COMMON SECTIONS ================= */
+    if(
+        canteenOrders.length > 0 ||
+        onlineOrders.length > 0
+    ){
+        document.getElementById(
+            "customerSection"
+        ).style.display = "block";
+        document.getElementById(
+            "contactSection"
+        ).style.display = "block";
+        document.getElementById(
+            "paymentSection"
+        ).style.display = "block";
+        document.getElementById(
+            "statusSection"
+        ).style.display = "block";
+        document.getElementById(
+            "totalSection"
+        ).style.display = "block";
+    }
+    else{
+        document.getElementById(
+            "customerSection"
+        ).style.display = "none";
+        document.getElementById(
+            "contactSection"
+        ).style.display = "none";
+        document.getElementById(
+            "paymentSection"
+        ).style.display = "none";
+        document.getElementById(
+            "statusSection"
+        ).style.display = "none";
+        document.getElementById(
+            "totalSection"
+        ).style.display = "none";
+    }
+    /* ================= DELIVERY ONLY ONLINE ================= */
+    if(onlineOrders.length > 0){
+        document.getElementById(
+            "deliverySection"
+        ).style.display = "block";
+    }
+    else{
+        document.getElementById(
+            "deliverySection"
+        ).style.display = "none";
+
+    }
+    /* ================= BUTTONS ================= */
+    document.getElementById(
+        "canteenOrderButton"
+    ).style.display =
+        canteenOrders.length > 0
+        ? "inline-block"
+        : "none";
+    document.getElementById(
+        "onlineOrderButton"
+    ).style.display =
+        onlineOrders.length > 0
+        ? "inline-block"
+        : "none";
+    calculateTotal();
+
+}
+/* ================= DISPLAY ORDER CARDS ================= */
+function displayOrderCards(
+    orders,
+    type
+){
+    let container =
+        document.getElementById(
+            "ordersContainer"
+        );
+    orders.forEach(
+        function(item,index){
+            let total =
+                Number(item.price) *
+                Number(item.quantity);
+            let card =
+                document.createElement(
+                    "div"
+                );
+            card.className =
+                "order-card";
+            let decreaseFunction =
+                type === "canteen"
+                ? `decreaseCanteen(${index})`
+                : `decreaseOnline(${index})`;
+            let increaseFunction =
+                type === "canteen"
+                ? `increaseCanteen(${index})`
+                : `increaseOnline(${index})`;
+            let removeFunction =
+                type === "canteen"
+                ? `removeCanteen(${index})`
+                : `removeOnline(${index})`;
+            card.innerHTML = `
+                <div class="food-info">
+                    <div class="food-icon">
+                        ${item.icon || "🍔"}
+                    </div>
+                    <div class="food-details">
+                        <h3>
+                            ${item.name}
+                        </h3>
+                        <p>
+                            Price: ₹${item.price}
+                        </p>
+                        <p>
+                            Quantity: ${item.quantity}
+                        </p>
+                        <p>
+                            Total: ₹${total}
+                        </p>
+                    </div>
+                </div>
+                <div class="quantity-section">
+                    <button
+                        class="quantity-btn"
+                        onclick="${decreaseFunction}">
+                        −
+                    </button>
+                    <span class="quantity">
+                        ${item.quantity}
+                    </span>
+                    <button
+                        class="quantity-btn"
+                        onclick="${increaseFunction}">
+                        +
+                    </button>
+                    <button
+                        class="remove-btn"
+                        onclick="${removeFunction}">
+                        Remove
+                    </button>
+                </div>
+            `;
+            container.appendChild(
+                card
+            );
+        }
+    );
+}
+/* ================= CANTEEN INCREASE ================= */
+function increaseCanteen(index){
+    let orders =
+        getCanteenOrders();
+    orders[index].quantity =
+        Number(
+            orders[index].quantity
+        ) + 1;
+    saveCanteenOrders(
+        orders
+    );
+    displayOrders();
+
+}
+/* ================= CANTEEN DECREASE ================= */
+function decreaseCanteen(index){
+    let orders =
+        getCanteenOrders();
+    if(
+        Number(
+            orders[index].quantity
+        ) > 1
+    ){
+        orders[index].quantity =
+            Number(
+                orders[index].quantity
+            ) - 1;
+    }
+    else{
+        orders.splice(
+            index,
+            1
+        );
+    }
+    saveCanteenOrders(
+        orders
+    );
+    displayOrders();
+
+}
+/* ================= CANTEEN REMOVE ================= */
+function removeCanteen(index){
+    let orders =
+        getCanteenOrders();
+    orders.splice(
+        index,
+        1
+    );
+    saveCanteenOrders(
+        orders
+    );
+    displayOrders();
+}
+/* ================= ONLINE INCREASE ================= */
+function increaseOnline(index){
+    let orders =
+        getOnlineOrders();
+    orders[index].quantity =
+        Number(
+            orders[index].quantity
+        ) + 1;
+    saveOnlineOrders(
+        orders
+    );
+    displayOrders();
+}
+/* ================= ONLINE DECREASE ================= */
+function decreaseOnline(index){
+    let orders =
+        getOnlineOrders();
+    if(
+        Number(
+            orders[index].quantity
+        ) > 1
+    ){
+        orders[index].quantity =
+            Number(
+                orders[index].quantity
+            ) - 1;
+
+    }
+    else{
+        orders.splice(
+            index,
+            1
+        );
+    }
+    saveOnlineOrders(
+        orders
+    );
+    displayOrders();
+}
+/* ================= ONLINE REMOVE ================= */
+function removeOnline(index){
+    let orders =
+        getOnlineOrders();
+    orders.splice(
+        index,
+        1
+    );
+    saveOnlineOrders(
+        orders
+    );
+    displayOrders();
+}
+/* ================= TOTAL ================= */
+function calculateTotal(){
+    let canteenOrders =
+        getCanteenOrders();
+    let onlineOrders =
+        getOnlineOrders();
+    let total = 0;
+    canteenOrders.forEach(
+        function(item){
+            total +=
+                Number(item.price) *
+                Number(item.quantity);
+        }
+    );
+    onlineOrders.forEach(
+        function(item){
+            total +=
+                Number(item.price) *
+                Number(item.quantity);
+        }
+    );
+    document.getElementById(
+        "grandTotal"
+    ).innerText = total;
+
+}
+/* ================= CURRENT LOCATION ================= */
+function useCurrentLocation(){
+    let status =
+        document.getElementById(
+            "locationStatus"
+        );
+    if(!navigator.geolocation){
+        status.innerText =
+            "❌ Location is not supported by your browser.";
+        return;
+    }
+    status.innerText =
+        "📍 Getting your location...";
+    navigator.geolocation.getCurrentPosition(
+        function(position){
+            let latitude =
+                position.coords.latitude;
+            let longitude =
+                position.coords.longitude;
+            document.getElementById(
+                "deliveryLocation"
+            ).value =
+                "Location: " +
+                latitude.toFixed(6) +
+                ", " +
+                longitude.toFixed(6);
+            status.innerText =
+                "✅ Location selected successfully.";
+        },
+        function(){
+            status.innerText =
+                "❌ Please allow location permission or enter location manually.";
+        }
+    );
+}
+/* ================= SAVE ORDER HISTORY ================= */
+function saveOrderToHistory(orderData){
+    let history =
+        JSON.parse(
+            localStorage.getItem("orderHistory") || "[]"
+        );
+    history.push({
+        orderType: orderData.orderType,
+        customerName: orderData.customerName,
+        mobileNumber: orderData.mobileNumber,
+        paymentMethod: orderData.paymentMethod,
+        items: orderData.items,
+        totalAmount: orderData.totalAmount,
+        amount: orderData.totalAmount,
+        orderStatus: orderData.orderStatus,
+        orderDate: orderData.orderDate
+
+    });
+    localStorage.setItem(
+        "orderHistory",
+        JSON.stringify(history)
+    );
+}
+/* ================= PLACE CANTEEN ORDER ================= */
+function placeCanteenOrder(){
+    let orders =
+        getCanteenOrders();
+    if(orders.length === 0){
+        alert(
+            "Please add food to Canteen Order."
+        );
+        return;
+    }
+    let name =
+        document.getElementById(
+            "customerName"
+        ).value.trim();
+    let mobile =
+        document.getElementById(
+            "mobileNumber"
+        ).value.trim();
+    if(name === ""){
+        alert(
+            "Please enter your name."
+        );
+        return;
+    }
+    if(
+        mobile === "" ||
+        !/^[0-9]{10}$/.test(mobile)
+    ){
+        alert(
+            "Please enter a valid 10 digit mobile number."
+        );
+        return;
+    }
+    let paymentElement =
+        document.querySelector(
+            'input[name="paymentMethod"]:checked'
+        );
+    let paymentMethod =
+        paymentElement
+        ? paymentElement.value
+        : "Cash at Canteen";
+    let total = 0;
+    orders.forEach(
+        function(item){
+            total +=
+                Number(item.price) *
+                Number(item.quantity);
+        }
+    );
+    let orderData = {
+        orderType:"Canteen",
+        customerName:name,
+        mobileNumber:mobile,
+        paymentMethod:paymentMethod,
+        items:orders,
+        totalAmount:total,
+        orderStatus:"Order Placed",
+        orderDate:
+            new Date().toLocaleString()
+
+    };
+    /* SAVE CURRENT CANTEEN ORDER */
+    localStorage.setItem(
+        "canteenCustomerOrder",
+        JSON.stringify(orderData)
+    );
+    /* SAVE OWNER HISTORY */
+    saveOrderToHistory(orderData);
+    localStorage.setItem(
+        "lastOrderType",
+        "Canteen"
+    );
+    alert(
+        "🎉 Canteen Order Placed Successfully!" +
+        "\n\nCustomer: " +
+        name +
+        "\nMobile: " +
+        mobile +
+        "\nPayment: " +
+        paymentMethod +
+        "\nTotal Amount: ₹" +
+        total
+    );
+    /* CLEAR CURRENT ORDER */
+    localStorage.removeItem(
+        "canteenOrders"
+    );
+    window.location.href =
+        "/bill";
+}
+/* ================= PLACE ONLINE ORDER ================= */
+function placeOnlineOrder(){
+    let orders =
+        getOnlineOrders();
+    if(orders.length === 0){
+        alert(
+            "Please add food to Online Order."
+        );
+        return;
+    }
+    let name =
+        document.getElementById(
+            "customerName"
+        ).value.trim();
+    let mobile =
+        document.getElementById(
+            "mobileNumber"
+        ).value.trim();
+    let location =
+        document.getElementById(
+            "deliveryLocation"
+        ).value.trim();
+    let address =
+        document.getElementById(
+            "fullAddress"
+        ).value.trim();
+    if(name === ""){
+        alert(
+            "Please enter your name."
+        );
+        return;
+    }
+    if(
+        mobile === "" ||
+        !/^[0-9]{10}$/.test(mobile)
+    ){
+        alert(
+            "Please enter a valid 10 digit mobile number."
+        );
+        return;
+    }
+    if(location === ""){
+        alert(
+            "Please enter your delivery location."
+        );
+        return;
+    }
+    if(address === ""){
+        alert(
+            "Please enter your full delivery address."
+        );
+        return;
+    }
+    let paymentElement =
+        document.querySelector(
+            'input[name="paymentMethod"]:checked'
+        );
+    let deliveryElement =
+        document.querySelector(
+            'input[name="deliveryType"]:checked'
+        );
+    let paymentMethod =
+        paymentElement
+        ? paymentElement.value
+        : "Online Payment";
+    let deliveryType =
+        deliveryElement
+        ? deliveryElement.value
+        : "Home Delivery";
+    let total = 0;
+    orders.forEach(
+        function(item){
+            total +=
+                Number(item.price) *
+                Number(item.quantity);
+        }
+    );
+    let orderData = {
+        orderType:"Online",
+        customerName:name,
+        mobileNumber:mobile,
+        location:location,
+        address:address,
+        deliveryType:deliveryType,
+        paymentMethod:paymentMethod,
+        items:orders,
+        totalAmount:total,
+        orderStatus:"Order Placed",
+        orderDate:
+            new Date().toLocaleString()
+
+    };
+    /* SAVE CURRENT ONLINE ORDER */
+    localStorage.setItem(
+        "onlineCustomerOrder",
+        JSON.stringify(orderData)
+    );
+    /* SAVE OWNER HISTORY */
+    saveOrderToHistory(orderData);
+    localStorage.setItem(
+        "lastOrderType",
+        "Online"
+    );
+    alert(
+        "🎉 Online Order Placed Successfully!" +
+        "\n\nCustomer: " +
+        name +
+        "\nMobile: " +
+        mobile +
+        "\nPayment: " +
+        paymentMethod +
+        "\nDelivery: " +
+        deliveryType +
+        "\nTotal Amount: ₹" +
+        total
+    );
+    /* CLEAR CURRENT ORDER */
+    localStorage.removeItem(
+        "onlineOrders"
+    );
+    window.location.href =
+        "/bill";
+
+}
+/* ================= LOAD ================= */
+displayOrders();
+</script>
+</body>
+</html>

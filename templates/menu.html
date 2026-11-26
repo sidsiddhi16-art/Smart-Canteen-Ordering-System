@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Canteen - Menu</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fc;
+            color: #333;
+        }
+        /* ================= NAVBAR ================= */
+        .navbar {
+            width: 100%;
+            background: linear-gradient(135deg, #0066ff, #00a8ff);
+            padding: 16px 55px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 102, 255, 0.25);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 8px;
+        }
+        .nav-item {
+            color: white;
+            text-decoration: none;
+            padding: 11px 18px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.20);
+            transform: translateY(-2px);
+        }
+        .nav-item.active {
+            background: white;
+            color: #0066ff;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+        }
+        /* ================= HERO ================= */
+        .hero {
+            text-align: center;
+            padding: 60px 20px 45px;
+            background: linear-gradient(135deg, #eaf5ff, #ffffff);
+        }
+        .hero h1 {
+            margin: 0;
+            font-size: 42px;
+            color: #075ee8;
+        }
+        .hero p {
+            margin-top: 12px;
+            color: #666;
+            font-size: 18px;
+        }
+        /* ================= ONLINE FOOD BOX ================= */
+        .online-food-box {
+            width: 90%;
+            max-width: 900px;
+            margin: 25px auto 10px;
+            padding: 25px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 102, 255, 0.12);
+            border: 1px solid #e5efff;
+        }
+        .online-food-box h2 {
+            margin: 0 0 8px;
+            color: #075ee8;
+            font-size: 27px;
+        }
+        .online-food-box p {
+            margin: 5px 0 18px;
+            color: #666;
+            font-size: 15px;
+        }
+        .delivery-info {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .delivery-item {
+            padding: 10px 18px;
+            background: #eef6ff;
+            color: #075ee8;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .online-order-btn {
+            display: inline-block;
+            padding: 14px 35px;
+            background: linear-gradient(135deg, #0066ff, #00a8ff);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 17px;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 102, 255, 0.25);
+            transition: 0.3s;
+        }
+        .online-order-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 102, 255, 0.35);
+        }
+        /* ================= MENU ================= */
+        .menu-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 35px auto 60px;
+        }
+        .section-title {
+            text-align: center;
+            color: #075ee8;
+            font-size: 30px;
+            margin-bottom: 25px;
+        }
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+        /* ================= FOOD CARD ================= */
+        .food-card {
+            background: white;
+            border-radius: 18px;
+            padding: 28px 22px;
+            text-align: center;
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+            transition: 0.3s;
+            border: 1px solid #eef2f7;
+        }
+        .food-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+        }
+        .food-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 18px;
+            border-radius: 50%;
+            background: #eef6ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 55px;
+        }
+        .food-card h2 {
+            margin: 10px 0;
+            font-size: 23px;
+            color: #222;
+        }
+        .category {
+            color: #0066ff;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .description {
+            color: #777;
+            font-size: 14px;
+            min-height: 38px;
+            line-height: 1.5;
+        }
+        .price {
+            font-size: 23px;
+            font-weight: bold;
+            color: #20a348;
+            margin: 17px 0;
+        }
+        /* ================= ORDER BUTTONS ================= */
+        .order-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .order-btn {
+            width: 100%;
+            border: none;
+            padding: 13px 15px;
+            border-radius: 9px;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .canteen-btn {
+            background: linear-gradient(135deg, #20a348, #34c759);
+        }
+        .canteen-btn:hover {
+            transform: scale(1.03);
+            background: linear-gradient(135deg, #188c3d, #28b84d);
+        }
+        .online-btn {
+            background: linear-gradient(135deg, #0066ff, #008cff);
+        }
+        .online-btn:hover {
+            transform: scale(1.03);
+            background: linear-gradient(135deg, #0052cc, #0075d9);
+        }
+        /* ================= FOOTER ================= */
+        .footer {
+            text-align: center;
+            padding: 25px;
+            background: #075ee8;
+            color: white;
+            font-size: 14px;
+        }
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 950px) {
+            .food-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 650px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px 20px;
+            }
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .nav-item {
+                padding: 9px 12px;
+                font-size: 14px;
+            }
+            .hero h1 {
+                font-size: 32px;
+            }
+            .food-grid {
+                grid-template-columns: 1fr;
+            }
+            .online-food-box {
+                width: 94%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ================= NAVBAR ================= -->
+    <nav class="navbar">
+        <div class="logo">
+            👨‍🍳 Smart Canteen
+        </div>
+        <div class="nav-links">
+            <a href="/home" class="nav-item">
+                🏠 Home
+            </a>
+            <a href="/menu" class="nav-item active">
+                🍔 Menu
+            </a>
+            <a href="/orders" class="nav-item">
+                🛒 Orders
+            </a>
+            <a href="/bill" class="nav-item">
+                🧾 Bill
+            </a>
+            <a href="/owner" class="nav-item">
+                👤 Owner
+            </a>
+        </div>
+    </nav>
+    <!-- ================= HERO ================= -->
+    <section class="hero">
+        <h1>
+            🍔 Our Menu
+        </h1>
+        <p>
+            Delicious food made fresh for you ❤️
+        </p>
+        <!-- ONLINE FOOD -->
+        <div class="online-food-box">
+            <h2>
+                🛵 Order Food Online
+            </h2>
+            <p>
+                Enjoy your favourite food from Smart Canteen
+                and get it delivered to your doorstep.
+            </p>
+            <div class="delivery-info">
+                <div class="delivery-item">
+                    🏠 Home Delivery
+                </div>
+                <div class="delivery-item">
+                    ⚡ Quick Ordering
+                </div>
+                <div class="delivery-item">
+                    🍴 Fresh Food
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ================= FOOD MENU ================= -->
+    <div class="menu-container">
+        <h2 class="section-title">
+            🍽️ Choose Your Favourite Food
+        </h2>
+        <div class="food-grid">
+            <!-- ================= PIZZA ================= -->
+            <div class="food-card">
+                <div class="food-icon">
+                    🍕
+                </div>
+                <h2>
+                    Pizza
+                </h2>
+                <div class="category">
+                    Fast Food
+                </div>
+                <p class="description">
+                    Delicious cheese pizza
+                    with fresh toppings.
+                </p>
+                <div class="price">
+                    ₹120
+                </div>
+                <div class="order-buttons">
+                    <button
+                        class="order-btn canteen-btn"
+                        onclick="addToCanteenOrder('Pizza',120,'🍕')">
+                        🏫 Canteen Order
+                    </button>
+                    <button
+                        class="order-btn online-btn"
+                        onclick="addToOnlineOrder('Pizza',120,'🍕')">
+                        🛵 Online Order
+                    </button>
+                </div>
+            </div>
+            <!-- ================= BURGER ================= -->
+            <div class="food-card">
+                <div class="food-icon">
+                    🍔
+                </div>
+                <h2>
+                    Burger
+                </h2>
+                <div class="category">
+                    Fast Food
+                </div>
+                <p class="description">
+                    Fresh and tasty
+                    vegetable burger.
+                </p>
+                <div class="price">
+                    ₹80
+                </div>
+                <div class="order-buttons">
+                    <button
+                        class="order-btn canteen-btn"
+                        onclick="addToCanteenOrder('Burger',80,'🍔')">
+                        🏫 Canteen Order
+                    </button>
+                    <button
+                        class="order-btn online-btn"
+                        onclick="addToOnlineOrder('Burger',80,'🍔')">
+                        🛵 Online Order
+                    </button>
+                </div>
+            </div>
+            <!-- ================= FRENCH FRIES ================= -->
+            <div class="food-card">
+                <div class="food-icon">
+                    🍟
+                </div>
+                <h2>
+                    French Fries
+                </h2>
+                <div class="category">
+                    Snacks
+                </div>
+                <p class="description">
+                    Crispy golden
+                    french fries.
+                </p>
+                <div class="price">
+                    ₹60
+                </div>
+                <div class="order-buttons">
+
+                    <button
+                        class="order-btn canteen-btn"
+                        onclick="addToCanteenOrder('French Fries',60,'🍟')">
+                        🏫 Canteen Order
+                    </button>
+                    <button
+                        class="order-btn online-btn"
+                        onclick="addToOnlineOrder('French Fries',60,'🍟')">
+                        🛵 Online Order
+                    </button>
+                </div>
+            </div>
+            <!-- ================= SANDWICH ================= -->
+            <div class="food-card">
+                <div class="food-icon">
+                    🥪
+                </div>
+                <h2>
+                    Sandwich
+                </h2>
+                <div class="category">
+                    Snacks
+                </div>
+                <p class="description">
+                    Fresh vegetable
+                    sandwich.
+                </p>
+                <div class="price">
+                    ₹70
+                </div>
+                <div class="order-buttons">
+                    <button
+                        class="order-btn canteen-btn"
+                        onclick="addToCanteenOrder('Sandwich',70,'🥪')">
+                        🏫 Canteen Order
+                    </button>
+                    <button
+                        class="order-btn online-btn"
+                        onclick="addToOnlineOrder('Sandwich',70,'🥪')">
+                        🛵 Online Order
+                    </button>
+                </div>
+            </div>
+            <!-- ================= NOODLES ================= -->
+            <div class="food-card">
+                <div class="food-icon">
+                    🍜
+                </div>
+                <h2>
+                    Noodles
+                </h2>
+                <div class="category">
+                    Chinese
+                </div>
+                <p class="description">
+                    Hot and spicy
+                    noodles.
+                </p>
+                <div class="price">
+                    ₹90
+                </div>
+                <div class="order-buttons">
+                    <button
+                        class="order-btn canteen-btn"
+                        onclick="addToCanteenOrder('Noodles',90,'🍜')">
+                        🏫 Canteen Order
+                    </button>
+                    <button
+                        class="order-btn online-btn"
+                        onclick="addToOnlineOrder('Noodles',90,'🍜')">
+                        🛵 Online Order
+                    </button>
+                </div>
+            </div>
+            <!-- ================= VEG THALI ================= -->
+            <div class="food-card">
+                <div class="food-icon">
+                    🍛
+                </div>
+                <h2>
+                    Veg Thali
+                </h2>
+                <div class="category">
+                    Indian Food
+                </div>
+                <p class="description">
+                    Complete Indian
+                    vegetarian meal.
+                </p>
+                <div class="price">
+                    ₹100
+                </div>
+                <div class="order-buttons">
+                    <button
+                        class="order-btn canteen-btn"
+                        onclick="addToCanteenOrder('Veg Thali',100,'🍛')">
+                        🏫 Canteen Order
+                    </button>
+                    <button
+                        class="order-btn online-btn"
+                        onclick="addToOnlineOrder('Veg Thali',100,'🍛')">
+                        🛵 Online Order
+                    </button>
+                </div>
+            </div>
+            <!-- ================= COLD DRINK ================= -->
+            <div class="food-card">
+                <div class="food-icon">
+                    🥤
+                </div>
+                <h2>
+                    Cold Drink
+                </h2>
+                <div class="category">
+                    Drinks
+                </div>
+                <p class="description">
+                    Chilled and refreshing
+                    cold drink.
+                </p>
+                <div class="price">
+                    ₹40
+                </div>
+                <div class="order-buttons">
+                    <button
+                        class="order-btn canteen-btn"
+                        onclick="addToCanteenOrder('Cold Drink',40,'🥤')">
+                        🏫 Canteen Order
+                    </button>
+                    <button
+                        class="order-btn online-btn"
+                        onclick="addToOnlineOrder('Cold Drink',40,'🥤')">
+                        🛵 Online Order
+                    </button>
+                </div>
+            </div>
+            <!-- ================= TEA ================= -->
+            <div class="food-card">
+                <div class="food-icon">
+                    🍵
+                </div>
+                <h2>
+                    Tea
+                </h2>
+                <div class="category">
+                    Drinks
+                </div>
+                <p class="description">
+                    Hot and refreshing
+                    tea.
+                </p>
+                <div class="price">
+                    ₹20
+                </div>
+                <div class="order-buttons">
+                    <button
+                        class="order-btn canteen-btn"
+                        onclick="addToCanteenOrder('Tea',20,'🍵')">
+                        🏫 Canteen Order
+                    </button>
+                    <button
+                        class="order-btn online-btn"
+                        onclick="addToOnlineOrder('Tea',20,'🍵')">
+                        🛵 Online Order
+                    </button>
+
+                </div>
+            </div>
+            <!-- ================= COFFEE ================= -->
+            <div class="food-card">
+
+                <div class="food-icon">
+                    ☕
+                </div>
+                <h2>
+                    Coffee
+                </h2>
+                <div class="category">
+                    Drinks
+                </div>
+                <p class="description">
+                    Hot and refreshing
+                    coffee.
+                </p>
+                <div class="price">
+                    ₹40
+                </div>
+                <div class="order-buttons">
+                    <button
+                        class="order-btn canteen-btn"
+                        onclick="addToCanteenOrder('Coffee',40,'☕')">
+                        🏫 Canteen Order
+                    </button>
+                    <button
+                        class="order-btn online-btn"
+                        onclick="addToOnlineOrder('Coffee',40,'☕')">
+                        🛵 Online Order
+                    </button>
+                </div>
+            </div>
+            <!-- ================= CHICKEN LOLLIPOP ================= -->
+            <div class="food-card">
+                <div class="food-icon">
+                    🍗
+                </div>
+                <h2>
+                    Chicken Lollipop
+                </h2>
+                <div class="category">
+                    Non-Veg
+                </div>
+                <p class="description">
+                    Crispy and delicious
+                    chicken lollipop.
+                </p>
+                <div class="price">
+                    ₹170
+                </div>
+                <div class="order-buttons">
+                    <button
+                        class="order-btn canteen-btn"
+                        onclick="addToCanteenOrder('Chicken Lollipop',170,'🍗')">
+                        🏫 Canteen Order
+                    </button>
+                    <button
+                        class="order-btn online-btn"
+                        onclick="addToOnlineOrder('Chicken Lollipop',170,'🍗')">
+                        🛵 Online Order
+                    </button>
+                </div>
+            </div>
+            <!-- ================= CHICKEN FRIED RICE ================= -->
+            <div class="food-card">
+                <div class="food-icon">
+                    🍚
+                </div>
+                <h2>
+                    Chicken Fried Rice
+                </h2>
+                <div class="category">
+                    Non-Veg
+                </div>
+                <p class="description">
+                    Hot and tasty
+                    chicken fried rice.
+                </p>
+                <div class="price">
+                    ₹140
+                </div>
+                <div class="order-buttons">
+                    <button
+                        class="order-btn canteen-btn"
+                        onclick="addToCanteenOrder('Chicken Fried Rice',140,'🍚')">
+                        🏫 Canteen Order
+                    </button>
+                    <button
+                        class="order-btn online-btn"
+                        onclick="addToOnlineOrder('Chicken Fried Rice',140,'🍚')">
+                        🛵 Online Order
+                    </button>
+                </div>
+            </div>
+            <!-- ================= CHICKEN THALI ================= -->
+            <div class="food-card">
+                <div class="food-icon">
+                    🍗🍛
+                </div>
+                <h2>
+                    Chicken Thali
+                </h2>
+                <div class="category">
+                    Non-Veg
+                </div>
+                <p class="description">
+                    Complete and delicious
+                    chicken thali.
+                </p>
+                <div class="price">
+                    ₹220
+                </div>
+                <div class="order-buttons">
+                    <button
+                        class="order-btn canteen-btn"
+                        onclick="addToCanteenOrder('Chicken Thali',220,'🍗🍛')">
+                        🏫 Canteen Order
+                    </button>
+                    <button
+                        class="order-btn online-btn"
+                        onclick="addToOnlineOrder('Chicken Thali',220,'🍗🍛')">
+                        🛵 Online Order
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+        © 2026 Smart Canteen
+        | Delicious Food, Easy Ordering ❤️
+    </footer>
+    <!-- ================= JAVASCRIPT ================= -->
+    <script>
+        /* ================= CANTEEN ORDER ================= */
+        function addToCanteenOrder(name, price, icon) {
+            let orders =
+                JSON.parse(
+                    localStorage.getItem("canteenOrders")
+                ) || [];
+            let existingItem =
+                orders.find(function(item) {
+                    return item.name === name;
+                });
+            if (existingItem) {
+                existingItem.quantity =
+                    Number(existingItem.quantity) + 1;
+
+            }
+            else {
+
+                orders.push({
+                    name: name,
+                    price: price,
+                    icon: icon,
+                    quantity: 1
+                });
+            }
+            localStorage.setItem(
+                "canteenOrders",
+                JSON.stringify(orders)
+            );
+            alert(
+                name +
+                " added to Canteen Order! 🏫"
+            );
+            window.location.href =
+                "/orders";
+        }
+        /* ================= ONLINE ORDER ================= */
+        function addToOnlineOrder(name, price, icon) {
+            let orders =
+                JSON.parse(
+                    localStorage.getItem("onlineOrders")
+                ) || [];
+            let existingItem =
+                orders.find(function(item) {
+                    return item.name === name;
+                });
+            if (existingItem) {
+                existingItem.quantity =
+                    Number(existingItem.quantity) + 1;
+
+            }
+            else {
+                orders.push({
+                    name: name,
+                    price: price,
+                    icon: icon,
+                    quantity: 1
+                });
+            }
+            localStorage.setItem(
+                "onlineOrders",
+                JSON.stringify(orders)
+            );
+            alert(
+                name +
+                " added to Online Order! 🛵"
+            );
+            window.location.href =
+                "/orders";
+        }
+    </script>
+</body>
+</html>

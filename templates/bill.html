@@ -1,0 +1,645 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Canteen - Bill</title>
+<style>
+*{box-sizing:border-box}
+body{
+    margin:0;font-family:Arial,sans-serif;color:#172b4d;
+    background:radial-gradient(circle at 10% 25%,#e5f0ff,transparent 25%),
+    radial-gradient(circle at 95% 55%,#e8f2ff,transparent 25%),#f4f8ff
+}
+.navbar{
+    min-height:90px;background:linear-gradient(135deg,#087cff,#0788e8);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:15px 35px;box-shadow:0 4px 15px #0050b433
+}
+.logo{display:flex;align-items:center;gap:12px;color:white}
+.logo-icon{font-size:42px}
+.logo-text h2{margin:0;font-size:28px}
+.logo-text p{margin:4px 0 0;font-size:13px}
+.nav-links{display:flex;flex-wrap:wrap;gap:8px}
+.nav-links a{
+    color:white;text-decoration:none;font-weight:bold;padding:10px 13px;
+    border-radius:25px
+}
+.nav-links a:hover,.nav-links .active{background:white;color:#087cff}
+.page-heading{text-align:center;padding:30px 15px 15px}
+.bill-icon{font-size:55px}
+.page-heading h1{margin:5px;font-size:42px;color:#102c69}
+.page-heading p{color:#596b8d;font-size:18px}
+.heart-line{margin:15px auto;max-width:450px;display:flex;gap:15px;align-items:center;color:#087cff}
+.heart-line:before,.heart-line:after{content:"";height:2px;background:#c5d5e9;flex:1}
+
+.bill-options{
+    width:90%;max-width:900px;margin:15px auto 25px;
+    display:grid;grid-template-columns:repeat(2,1fr);gap:20px
+}
+.bill-option{
+    background:white;border:2px solid #dce8f7;border-radius:18px;
+    padding:22px;text-align:center;cursor:pointer;
+    box-shadow:0 8px 25px #1f4e791a;transition:.3s
+}
+.bill-option:hover{transform:translateY(-3px);border-color:#087cff}
+.bill-option.selected{border-color:#087cff;background:#edf6ff}
+.option-icon{font-size:42px}
+.bill-option h2{color:#153c83;font-size:22px}
+.bill-option p{color:#687995}
+
+.bill-card{
+    width:90%;max-width:900px;margin:15px auto 45px;background:white;
+    border-radius:22px;padding:28px;box-shadow:0 12px 40px #1f4e7929;
+    border:1px solid #e5edf8;position:relative
+}
+.bill-card:before{
+    content:"";position:absolute;left:0;right:0;top:0;height:7px;
+    background:linear-gradient(90deg,#087cff,#16a0ff,#087cff);
+    border-radius:22px 22px 0 0
+}
+.bill-top{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:10px 5px 22px;border-bottom:2px dashed #cbd8e9
+}
+.canteen-brand{display:flex;align-items:center;gap:12px}
+.canteen-logo{
+    width:65px;height:65px;border-radius:50%;
+    background:linear-gradient(135deg,#087cff,#005ed7);color:white;
+    display:flex;align-items:center;justify-content:center;font-size:32px
+}
+.canteen-brand h2{margin:0;color:#153c83;font-size:27px}
+.canteen-brand p{color:#087cff;font-weight:bold}
+.order-info{line-height:1.9;font-size:14px;color:#405475}
+.order-type{
+    margin:20px 0;padding:14px;border-radius:12px;text-align:center;
+    font-size:19px;font-weight:bold
+}
+.order-type.canteen{background:#eef6ff;color:#075ec4;border:1px solid #cfe3fa}
+.order-type.online{background:#fff3e8;color:#e66b00;border:1px solid #ffd7b0}
+.bill-title{text-align:center;padding:12px 0}
+.bill-title h2{font-family:Georgia,serif;font-style:italic;color:#087cff;font-size:32px}
+.bill-title p{color:#596b8d}
+.customer-box{
+    display:none;margin:10px 0 20px;padding:18px;background:#f7fbff;
+    border:1px solid #d7e7fa;border-radius:12px
+}
+.customer-box h3{color:#153c83}
+.customer-box p{color:#536785}
+.table-wrapper{overflow-x:auto}
+table{width:100%;border-collapse:collapse;margin-top:8px}
+th{background:linear-gradient(135deg,#087cff,#006ce5);color:white;padding:13px 8px}
+td{padding:13px 8px;text-align:center;border-bottom:1px solid #e4ebf5}
+tbody tr:nth-child(odd){background:#f5f9ff}
+.food-name{text-align:left;font-weight:bold}
+.food-icon{font-size:20px;margin-right:6px}
+.quantity{display:inline-block;padding:5px 12px;border-radius:20px;background:#dceaff;color:#075ec4;font-weight:bold}
+.item-total{font-weight:bold}
+.discount-summary{
+    margin-top:20px;padding:18px 22px;background:#fff8e8;
+    border:1px solid #f5d58b;border-radius:14px
+}
+.summary-row{
+    display:flex;justify-content:space-between;align-items:center;
+    gap:12px;padding:9px 0;font-size:17px;color:#405475
+}
+.discount-row{color:#16804a;font-weight:bold;border-top:1px dashed #e5cc8d;margin-top:5px;padding-top:14px}
+.discount-badge{background:#16804a;color:white;padding:4px 9px;border-radius:20px;font-size:12px;white-space:nowrap}
+.grand-total{
+    margin-top:18px;padding:18px 22px;background:linear-gradient(135deg,#effff6,#e3faed);
+    border:1px solid #c8ead6;border-radius:14px;display:flex;
+    justify-content:space-between;align-items:center;gap:15px
+}
+.grand-total-left{display:flex;align-items:center;gap:12px}
+.money-icon{
+    width:48px;height:48px;border-radius:50%;background:#25a86b;color:white;
+    display:flex;align-items:center;justify-content:center;font-size:25px
+}
+.grand-total-left h2{margin:0;color:#153c83;font-size:22px}
+.grand-total-left p{font-size:13px;color:#58705f}
+.amount{background:linear-gradient(135deg,#22ae69,#0b9b59);color:white;padding:10px 20px;border-radius:30px;font-size:26px;font-weight:bold}
+
+.payment-section{
+    margin-top:30px;padding:22px;background:#f7fbff;
+    border:1px solid #d7e7fa;border-radius:16px
+}
+.payment-title{text-align:center;margin-bottom:20px}
+.payment-title h2{color:#102c69}
+.payment-options{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.payment-option input{display:none}
+.payment-option label{
+    display:block;padding:16px 8px;background:white;border:2px solid #dce7f4;
+    border-radius:12px;text-align:center;cursor:pointer;min-height:125px
+}
+.payment-option input:checked+label{border-color:#087cff;background:#edf6ff}
+.payment-icon{display:block;font-size:30px;margin-bottom:8px}
+.payment-option strong{display:block;color:#153c83}
+.payment-option small{display:block;margin-top:6px;color:#71809a}
+.upi-box{display:none;margin-top:18px;padding:18px;background:white;border-radius:12px;border:1px solid #dce7f4}
+.upi-box label{display:block;margin-bottom:8px;font-weight:bold}
+.upi-box input{width:100%;padding:12px;border:1px solid #cbd8e9;border-radius:8px}
+.pay-now-area{text-align:center;margin-top:20px}
+.pay-now-btn{
+    border:0;background:linear-gradient(135deg,#087cff,#005ed7);color:white;
+    padding:14px 35px;border-radius:30px;font-size:18px;font-weight:bold;cursor:pointer
+}
+.payment-status,.rating-message{
+    display:none;margin-top:15px;padding:14px;background:#e9fff3;
+    border:1px solid #b9e8cd;color:#14804a;border-radius:10px;font-weight:bold
+}
+.rating-section{
+    margin-top:28px;padding:23px;background:#fffaf0;border:1px solid #f5dfad;
+    border-radius:16px;text-align:center
+}
+.rating-section h2{color:#f39c12}
+.rating-section p{color:#667895}
+.star{font-size:38px;color:#d5d5d5;cursor:pointer;margin:3px}
+.star.selected{color:#ffc107}
+.review-text{
+    width:100%;min-height:85px;padding:12px;border:1px solid #cbd8e9;
+    border-radius:10px;resize:vertical
+}
+.rating-submit{
+    margin-top:12px;padding:12px 25px;border:0;border-radius:30px;
+    background:#f39c12;color:white;font-weight:bold;cursor:pointer
+}
+.bottom-section{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-top:25px}
+.thank-you{font-family:Georgia,serif;font-style:italic;font-size:20px;color:#153c83}
+.buttons{display:flex;gap:10px;flex-wrap:wrap}
+.btn{border:0;padding:12px 18px;border-radius:10px;font-weight:bold;cursor:pointer;text-decoration:none;display:inline-block}
+.print-btn{background:#087cff;color:white}
+.menu-btn{background:#25ad69;color:white}
+.empty-bill{text-align:center;padding:35px 15px}
+.empty-bill .icon{font-size:55px}
+.empty-bill h2{color:#555}
+.empty-bill p{color:#777}
+@media(max-width:800px){
+    .navbar{flex-direction:column;padding:15px;gap:12px}
+    .nav-links{justify-content:center}
+    .nav-links a{font-size:13px;padding:8px}
+    .bill-options{grid-template-columns:1fr}
+    .bill-card{width:95%;padding:20px 14px}
+    .bill-top{flex-direction:column;gap:15px}
+    .order-info{text-align:center}
+    .payment-options{grid-template-columns:1fr}
+    .grand-total{flex-direction:column;text-align:center}
+    .bottom-section{flex-direction:column}
+    .buttons{width:100%;flex-direction:column}
+    .btn{text-align:center;width:100%}
+    .page-heading h1{font-size:36px}
+}
+@media print{
+    .navbar,.page-heading,.bill-options,.payment-section,.rating-section,.buttons{display:none!important}
+    body{background:white}
+    .bill-card{width:100%;margin:0;padding:10px;box-shadow:none;border:none}
+    .customer-box{display:block!important}
+}
+</style>
+</head>
+<body>
+<div class="navbar">
+    <div class="logo">
+        <div class="logo-icon">🍴</div>
+        <div class="logo-text">
+            <h2>Smart Canteen</h2>
+            <p>Fresh Taste • Happy Moments</p>
+        </div>
+    </div>
+    <div class="nav-links">
+        <a href="/home">🏠 Home</a>
+        <a href="/menu">🍴 Menu</a>
+        <a href="/orders">🛒 Orders</a>
+        <a href="/bill" class="active">🧾 Bill</a>
+        <a href="/owner">👤 Owner</a>
+    </div>
+</div>
+<div class="page-heading">
+    <div class="bill-icon">🧾</div>
+    <h1>Your Bill</h1>
+    <p>Select your order type</p>
+    <div class="heart-line">❤️</div>
+</div>
+<div class="bill-options">
+    <div class="bill-option" id="canteenBillOption" onclick="showBill('Canteen')">
+        <div class="option-icon">🏫</div>
+        <h2>Canteen Order Bill</h2>
+        <p>Order food from college canteen</p>
+    </div>
+    <div class="bill-option" id="onlineBillOption" onclick="showBill('Online')">
+        <div class="option-icon">🛵</div>
+        <h2>Online Food Order Bill</h2>
+        <p>Home delivery food order</p>
+    </div>
+</div>
+<div class="bill-card">
+    <div class="bill-top">
+        <div class="canteen-brand">
+            <div class="canteen-logo">🍴</div>
+            <div>
+                <h2>Smart Canteen</h2>
+                <p id="brandSubtitle">Fresh Food • Great Taste</p>
+            </div>
+        </div>
+        <div class="order-info">
+            <div>📅 <strong>Date:</strong> <span id="billDate"></span></div>
+            <div>🕐 <strong>Time:</strong> <span id="billTime"></span></div>
+            <div>🧾 <strong>Order No:</strong> <span id="orderNumber"></span></div>
+        </div>
+    </div>
+    <div class="order-type" id="orderType">🧾 Select Order Type</div>
+    <div class="bill-title">
+        <h2 id="billTitle">~ Select Bill Type ~</h2>
+        <p id="billSubtitle">Choose your bill type</p>
+    </div>
+    <div class="customer-box" id="customerBox">
+        <h3>👤 Customer Information</h3>
+        <p><strong>Name:</strong> <span id="customerName"></span></p>
+        <p><strong>Mobile:</strong> <span id="customerMobile"></span></p>
+        <p id="deliveryAddressRow"><strong>📍 Delivery Address:</strong> <span id="deliveryAddress"></span></p>
+        <p id="deliveryTypeRow"><strong>🛵 Delivery Type:</strong> <span id="deliveryType"></span></p>
+    </div>
+    <div id="billContent">
+        <div class="empty-bill">
+            <div class="icon">🧾</div>
+            <h2>Select a Bill Type</h2>
+            <p>Please select a bill type above.</p>
+        </div>
+    </div>
+    <div class="discount-summary">
+        <div class="summary-row">
+            <span>Subtotal</span>
+            <strong>₹<span id="subtotalAmount">0.00</span></strong>
+        </div>
+        <div class="summary-row discount-row">
+            <span>🎉 Discount <span class="discount-badge">5% OFF</span></span>
+            <strong>− ₹<span id="discountAmount">0.00</span></strong>
+        </div>
+    </div>
+    <div class="grand-total">
+        <div class="grand-total-left">
+            <div class="money-icon">₹</div>
+            <div>
+                <h2>Grand Total</h2>
+                <p>Subtotal after discount</p>
+            </div>
+        </div>
+        <div class="amount">₹<span id="grandTotal">0.00</span></div>
+    </div>
+    <div class="payment-section">
+        <div class="payment-title">
+            <h2>💳 Payment</h2>
+            <p>Select your preferred payment method</p>
+        </div>
+        <div class="payment-options">
+            <div class="payment-option">
+                <input type="radio" name="payment" id="upi" value="UPI">
+                <label for="upi">
+                    <span class="payment-icon">📱</span>
+                    <strong>UPI Payment</strong>
+                    <small>Google Pay / PhonePe / Paytm</small>
+                </label>
+            </div>
+            <div class="payment-option">
+                <input type="radio" name="payment" id="phonepe" value="PhonePe">
+                <label for="phonepe">
+                    <span class="payment-icon">🟣</span>
+                    <strong>PhonePe Payment</strong>
+                    <small>Pay using PhonePe</small>
+                </label>
+            </div>
+            <div class="payment-option">
+                <input type="radio" name="payment" id="cash" value="Cash">
+                <label for="cash">
+                    <span class="payment-icon">💵</span>
+                    <strong id="cashTitle">Cash at Canteen</strong>
+                    <small id="cashDescription">Pay at Canteen Counter</small>
+                </label>
+            </div>
+        </div>
+        <div class="upi-box" id="upiBox">
+            <label for="upiId">Enter UPI ID</label>
+            <input type="text" id="upiId" placeholder="example@upi">
+        </div>
+        <div class="pay-now-area">
+            <button class="pay-now-btn" onclick="makePayment()">
+                💳 Pay Now ₹<span id="paymentAmount">0.00</span>
+            </button>
+            <div class="payment-status" id="paymentStatus"></div>
+        </div>
+    </div>
+    <div class="rating-section">
+        <h2>⭐ Rating & Review</h2>
+        <p>How was your experience with Smart Canteen?</p>
+        <div class="stars">
+            <span class="star" data-rating="1">★</span>
+            <span class="star" data-rating="2">★</span>
+            <span class="star" data-rating="3">★</span>
+            <span class="star" data-rating="4">★</span>
+            <span class="star" data-rating="5">★</span>
+        </div>
+        <textarea id="reviewText" class="review-text" placeholder="Write your review here..."></textarea>
+        <button class="rating-submit" onclick="submitReview()">⭐ Submit Review</button>
+        <div id="ratingMessage" class="rating-message"></div>
+    </div>
+    <div class="bottom-section">
+        <div class="thank-you">Have a nice day! 😊</div>
+        <div class="buttons">
+            <button class="btn print-btn" onclick="window.print()">🖨️ Print Bill</button>
+            <a href="/menu" class="btn menu-btn">🏠 Back to Menu</a>
+        </div>
+    </div>
+</div>
+<script>
+let currentBillType = "";
+let selectedRating = 0;
+const DISCOUNT_PERCENT = 5;
+function setDateTime(){
+    const now = new Date();
+    document.getElementById("billDate").innerText =
+        now.toLocaleDateString("en-IN",{
+            day:"2-digit",month:"short",year:"numeric"
+        });
+    document.getElementById("billTime").innerText =
+        now.toLocaleTimeString("en-IN",{
+            hour:"2-digit",minute:"2-digit"
+        });
+    let savedOrderNo = localStorage.getItem("smartCanteenBillOrderNo");
+    if(!savedOrderNo){
+        savedOrderNo = "#SC" + Math.floor(1000 + Math.random()*9000);
+        localStorage.setItem("smartCanteenBillOrderNo",savedOrderNo);
+    }
+    document.getElementById("orderNumber").innerText = savedOrderNo;
+}
+function readJSON(key){
+    try{
+        return JSON.parse(localStorage.getItem(key)) || [];
+    }catch(error){
+        return [];
+    }
+}
+function getCanteenOrder(){
+    const saved = localStorage.getItem("canteenCustomerOrder");
+    if(saved){
+        try{
+            const data = JSON.parse(saved);
+            return {
+                orders:data.items || data.orders || [],
+                customerName:data.customerName || "",
+                mobileNumber:data.mobileNumber || ""
+            };
+        }catch(error){}
+    }
+    return {
+        orders:readJSON("canteenOrders"),
+        customerName:"",
+        mobileNumber:""
+    };
+}
+function getOnlineOrder(){
+    const saved = localStorage.getItem("onlineCustomerOrder");
+    if(saved){
+        try{
+            const data = JSON.parse(saved);
+            return {
+                orders:data.items || data.orders || [],
+                customerName:data.customerName || "",
+                mobileNumber:data.mobileNumber || "",
+                address:data.address || data.location || "",
+                deliveryType:data.deliveryType || "Home Delivery"
+            };
+        }catch(error){}
+    }
+    return {
+        orders:readJSON("onlineOrders"),
+        customerName:"",
+        mobileNumber:"",
+        address:"",
+        deliveryType:"Home Delivery"
+    };
+}
+function showBill(type){
+    currentBillType = type;
+    localStorage.setItem("lastOrderType",type);
+    document.getElementById("canteenBillOption")
+        .classList.toggle("selected",type==="Canteen");
+    document.getElementById("onlineBillOption")
+        .classList.toggle("selected",type==="Online");
+    if(type==="Canteen"){
+        generateCanteenBill();
+    }else{
+        generateOnlineBill();
+    }
+}
+function generateCanteenBill(){
+    const data = getCanteenOrder();
+    document.getElementById("orderType").innerText = "🏫 Canteen Order Bill";
+    document.getElementById("orderType").className = "order-type canteen";
+    document.getElementById("billTitle").innerText = "~ Canteen Order Bill ~";
+    document.getElementById("billSubtitle").innerText = "Fresh Food • Collect at Canteen";
+    document.getElementById("brandSubtitle").innerText = "Fresh Food • Great Taste";
+    document.getElementById("cashTitle").innerText = "Cash at Canteen";
+    document.getElementById("cashDescription").innerText = "Pay at Canteen Counter";
+    document.getElementById("deliveryAddressRow").style.display = "none";
+    document.getElementById("deliveryTypeRow").style.display = "none";
+    showCustomer(data);
+    createBillTable(data.orders);
+    resetPayment();
+}
+function generateOnlineBill(){
+    const data = getOnlineOrder();
+    document.getElementById("orderType").innerText = "🛵 Online Food Order Bill";
+    document.getElementById("orderType").className = "order-type online";
+    document.getElementById("billTitle").innerText = "~ Online Food Order Bill ~";
+    document.getElementById("billSubtitle").innerText = "Delicious Food • Home Delivery";
+    document.getElementById("brandSubtitle").innerText = "Fresh Food • Home Delivery";
+    document.getElementById("cashTitle").innerText = "Cash on Delivery";
+    document.getElementById("cashDescription").innerText = "Pay when food is delivered";
+    document.getElementById("deliveryAddressRow").style.display = "block";
+    document.getElementById("deliveryTypeRow").style.display = "block";
+
+    showCustomer(data);
+
+    document.getElementById("deliveryAddress").innerText = data.address || "-";
+    document.getElementById("deliveryType").innerText = data.deliveryType || "Home Delivery";
+    createBillTable(data.orders);
+    resetPayment();
+}
+function showCustomer(data){
+    const hasCustomer = data.customerName || data.mobileNumber ||
+        (currentBillType==="Online" && data.address);
+    document.getElementById("customerBox").style.display =
+        hasCustomer ? "block" : "none";
+    document.getElementById("customerName").innerText = data.customerName || "-";
+    document.getElementById("customerMobile").innerText = data.mobileNumber || "-";
+}
+function createBillTable(orders){
+    const billContent = document.getElementById("billContent");
+    if(!Array.isArray(orders) || orders.length===0){
+        billContent.innerHTML = `
+            <div class="empty-bill">
+                <div class="icon">🛒</div>
+                <h2>No items in this bill</h2>
+                <p>Please place an order from the Menu.</p>
+            </div>`;
+        updateTotals(0);
+        return;
+    }
+    let html = `
+        <div class="table-wrapper">
+        <table>
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Food</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+        </tr>
+        </thead>
+        <tbody>`;
+    let subtotal = 0;
+    orders.forEach(function(item,index){
+        const price = Number(item.price) || 0;
+        const quantity = Math.max(1,Number(item.quantity) || 1);
+        const total = price * quantity;
+        subtotal += total;
+        html += `
+            <tr>
+                <td>${index+1}</td>
+                <td class="food-name">
+                    <span class="food-icon">${escapeHTML(item.icon || "🍴")}</span>
+                    ${escapeHTML(item.name || item.item_name || "Food Item")}
+                </td>
+                <td>₹${price.toFixed(2)}</td>
+                <td><span class="quantity">${quantity}</span></td>
+                <td class="item-total">₹${total.toFixed(2)}</td>
+            </tr>`;
+    });
+    html += "</tbody></table></div>";
+    billContent.innerHTML = html;
+    updateTotals(subtotal);
+}
+function escapeHTML(value){
+    return String(value ?? "").replace(/[&<>"']/g,function(ch){
+        return {
+            "&":"&amp;",
+            "<":"&lt;",
+            ">":"&gt;",
+            '"':"&quot;",
+            "'":"&#39;"
+        }[ch];
+    });
+}
+function updateTotals(subtotal){
+    const discount = Math.round(
+        (subtotal * DISCOUNT_PERCENT / 100 + Number.EPSILON)*100
+    )/100;
+    const payable = Math.max(
+        0,
+        Math.round((subtotal-discount+Number.EPSILON)*100)/100
+    );
+    document.getElementById("subtotalAmount").innerText = subtotal.toFixed(2);
+    document.getElementById("discountAmount").innerText = discount.toFixed(2);
+    document.getElementById("grandTotal").innerText = payable.toFixed(2);
+    document.getElementById("paymentAmount").innerText = payable.toFixed(2);
+}
+function resetPayment(){
+    document.querySelectorAll('input[name="payment"]').forEach(function(r){
+        r.checked = false;
+    });
+    document.getElementById("upiBox").style.display = "none";
+    document.getElementById("paymentStatus").style.display = "none";
+    document.getElementById("upiId").value = "";
+}
+document.querySelectorAll('input[name="payment"]').forEach(function(radio){
+    radio.addEventListener("change",function(){
+        document.getElementById("upiBox").style.display =
+            (this.value==="UPI" || this.value==="PhonePe") ? "block" : "none";
+    });
+});
+function makePayment(){
+    if(!currentBillType){
+        alert("Please select a Bill Type first.");
+        return;
+    }
+    const selected = document.querySelector('input[name="payment"]:checked');
+    if(!selected){
+        alert("Please select a payment method.");
+        return;
+    }
+    const amount = Number(document.getElementById("paymentAmount").innerText);
+    if(amount<=0){
+        alert("Please add food items before payment.");
+        return;
+    }
+    if(selected.value==="UPI" || selected.value==="PhonePe"){
+        const upiId = document.getElementById("upiId").value.trim();
+        if(!/^[\w.-]+@[\w.-]+$/.test(upiId)){
+            alert("Please enter a valid UPI ID, for example name@upi.");
+            return;
+        }
+    }
+    let paymentName = selected.value;
+    if(paymentName==="Cash"){
+        paymentName = currentBillType==="Canteen"
+            ? "Cash at Canteen"
+            : "Cash on Delivery";
+    }
+    const status = document.getElementById("paymentStatus");
+    status.style.display = "block";
+    status.innerHTML = `
+        ✅ Demo payment confirmation<br>
+        Order Type: ${currentBillType==="Canteen"?"Canteen Order":"Online Food Order"}<br>
+        Payment Method: ${escapeHTML(paymentName)}<br>
+        Amount after 5% discount: ₹${amount.toFixed(2)}<br>
+        <small>This is a demo only; no real payment was processed.</small>`;
+    localStorage.setItem("smartCanteenLastPayment",JSON.stringify({
+        orderType:currentBillType,
+        paymentMethod:paymentName,
+        amount:amount,
+        date:new Date().toISOString()
+    }));
+}
+document.querySelectorAll(".star").forEach(function(star){
+    star.addEventListener("click",function(){
+        selectedRating = Number(this.dataset.rating);
+        document.querySelectorAll(".star").forEach(function(s){
+            s.classList.toggle(
+                "selected",
+                Number(s.dataset.rating)<=selectedRating
+            );
+        });
+    });
+});
+function submitReview(){
+    const review = document.getElementById("reviewText").value.trim();
+    if(!selectedRating){
+        alert("Please select a rating.");
+        return;
+    }
+    if(!review){
+        alert("Please write your review.");
+        return;
+    }
+    const reviews = readJSON("smartCanteenReviews");
+    reviews.push({
+        rating:selectedRating,
+        review:review,
+        date:new Date().toISOString(),
+        orderType:currentBillType
+    });
+    localStorage.setItem("smartCanteenReviews",JSON.stringify(reviews));
+    const message = document.getElementById("ratingMessage");
+    message.style.display = "block";
+    message.innerText =
+        "✅ Thank you! You gave "+selectedRating+
+        " star rating. Your review is saved in this browser.";
+    document.getElementById("reviewText").value = "";
+}
+setDateTime();
+const lastType = localStorage.getItem("lastOrderType");
+showBill(lastType==="Online" ? "Online" : "Canteen");
+</script>
+</body>
+</html>
