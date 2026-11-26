@@ -1,9 +1,6 @@
-import mysql.connector
+
+from connection import get_connection
+
+
 def get_db_connection():
-    connection = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="123",
-        database="smart_canteen"
-    )
-    return connection
+    return get_connection()
